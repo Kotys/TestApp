@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "U Komendů",
+    "menus": [
+      {
+        "date": "2017-15",
+        "dayMenus": [
+          {
+            "date": "2017-04-14",
+            "menuItems": [
+              {
+                "type": "soup",
+                "title": "Brokolicový krém"
+              },
+              {
+                "type": "soup",
+                "title": "Česnekačka"
+              },
+              {
+                "type": "meal",
+                "title": "Vepřo knedlo zelo"
+              },
+              {
+                "type": "meal",
+                "title": "Kuře"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

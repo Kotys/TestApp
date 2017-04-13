@@ -1,0 +1,39 @@
+h2, #date {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#date {
+  background: none;
+  border: none;
+  outline: none;
+  /*border-bottom: 1px solid grey;*/
+  font-size: 30px;
+  margin-top: 12px;
+  text-align: center;
+  max-width: 240px;
+}
+
+#date.ng-invalid {
+  /*border-bottom: 1px solid #a94442;*/
+  color: #a94442;
+}
+
+i.fa.fa-arrow-left, i.fa.fa-arrow-right {
+  font-size: 30px;
+  margin-top: 20px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+i.fa.fa-arrow-left:hover, i.fa.fa-arrow-right:hover {
+  opacity: 0.8;
+}
+
+i.fa.fa-arrow-left {
+  margin-right: -25px;
+}
+
+i.fa.fa-arrow-right {
+  margin-left: -25px;
+}

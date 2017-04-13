@@ -1,0 +1,38 @@
+.inner-box {
+  padding: 0 15px;
+}
+
+.inner-box ul:last-child {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  display: block;
+}
+
+ul li {
+  display: block;
+}
+
+ul li.list-heading {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+ul li.menu-item, ul li.list-empty  {
+  margin: 5px 0 5px 20px;
+}
+
+
+button.open-detail {
+  margin: auto;
+  display: block;
+}
+
+.no-menu {
+  text-align: center;
+  padding: 20px 0 30px;
+}

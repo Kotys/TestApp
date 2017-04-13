@@ -1,0 +1,32 @@
+<div class="box col-lg-6">
+  <div class="inner-box">
+    <hr>
+    <h2 class="intro-text text-center">
+      {{restaurant.title}}
+    </h2>
+    <hr>
+
+    <ng-container *ngIf="menuByDate">
+      <ul>
+        <li class="list-heading">Polévky</li>
+        <li class="list-empty" *ngIf="menuByDate.getMenuItemByType('soup').length === 0">Žádná nabídka</li>
+        <li *ngFor="let menuItem of menuByDate.getMenuItemByType('soup'); let i = index" class="menu-item">
+          {{i + 1}}. {{menuItem.title}}
+        </li>
+      </ul>
+
+      <ul>
+        <li class="list-heading">Hlavní jídlo</li>
+        <li class="list-empty" *ngIf="menuByDate.getMenuItemByType('meal').length === 0">Žádná nabídka</li>
+        <li *ngFor="let menuItem of menuByDate.getMenuItemByType('meal'); let i = index" class="menu-item">
+          {{i + 1}}. {{menuItem.title}}
+        </li>
+      </ul>
+    </ng-container>
+    <div class="no-menu" *ngIf="!menuByDate">
+      <p>Restaurace nemá na den <strong>{{viewDate | humanDate}}</strong> žádnout nabídku.</p>
+    </div>
+
+    <button type="button" class="btn btn-default open-detail">Přejít na restauraci</button>
+  </div>
+</div>
