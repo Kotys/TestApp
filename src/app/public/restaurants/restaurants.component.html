@@ -1,25 +1,31 @@
-<div class="row">
-  <div class="box">
-    <div class="col-lg-6">
-      <h2>Nabídka restaurací</h2>
-    </div>
-    <div class="col-lg-6">
-      <form [formGroup]="viewDateForm">
-
+<ng-container *ngIf="!loadingState">
+  <div class="row">
+    <div class="box">
+      <div class="col-lg-6">
+        <h2>Nabídka restaurací</h2>
+      </div>
+      <div class="col-lg-6">
         <label for="date" class="pull-right">
-          <i (click)="prevDay($event)" class="fa fa-arrow-left" aria-hidden="true"></i>
-          <input type="text" formControlName="viewDate" id="date" maxlength="10">
-          <i (click)="nextDay($event)" class="fa fa-arrow-right" aria-hidden="true"></i>
+          <i (click)="prevDay()" class="fa fa-arrow-left" aria-hidden="true"></i>
+          <input type="text"
+                 [(ngModel)]="viewDate"
+                 (ngModelChange)="dateChanged($event)"
+                 [class.invalid]="viewDateInvalid"
+                 id="date"
+                 maxlength="10">
+          <i (click)="nextDay()" class="fa fa-arrow-right" aria-hidden="true"></i>
         </label>
-      </form>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <app-restaurant-box
-    *ngFor="let restaurant of restaurants"
-    [viewDate]="viewDate"
-    [restaurant]="restaurant">
-  </app-restaurant-box>
-</div>
+  <div class="row">
+    <app-restaurant-box
+      *ngFor="let restaurant of restaurants"
+      [viewDate]="viewDate"
+      [restaurant]="restaurant">
+    </app-restaurant-box>
+  </div>
+</ng-container>
+
+<app-loading-spinner *ngIf="loadingState"></app-loading-spinner>

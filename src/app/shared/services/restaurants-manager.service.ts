@@ -1,4 +1,4 @@
-import {Injectable, Injector} from "@angular/core";
+import {EventEmitter, Injectable, Injector} from "@angular/core";
 import {Restaurant} from "../model/restaurant";
 import {Http} from "@angular/http";
 import "rxjs";
@@ -13,6 +13,8 @@ export class RestaurantsManagerService {
 
   private http: Http;
   private store: Store<any>;
+
+  private _dataPrepared: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(injector: Injector) {
     this.http = injector.get(Http);
@@ -35,8 +37,18 @@ export class RestaurantsManagerService {
     // }
   }
 
+  get dataPrepared(): Observable<boolean> {
+    return this._dataPrepared.asObservable();
+  }
+
   public getAllRestaurants(): Observable<Restaurant[]> {
     return this.store.select('RestaurantsStore');
+  }
+
+  public getAllRestaurantsByDate(date: string): Observable<Restaurant[]> {
+    return this.store.select('RestaurantsStore').filter((restaurant: Restaurant) => {
+      return true;
+    });
   }
 
   private initLocalData(): void {
@@ -51,6 +63,7 @@ export class RestaurantsManagerService {
       .subscribe((restaurants: Restaurant[]) => {
         this.store.dispatch({type: 'SET_RESTAURANTS', payload: restaurants});
         this.saveRestaurants(restaurants);
+        this._dataPrepared.emit(true);
       }, error => {
         console.error(error);
       });

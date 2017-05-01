@@ -27,6 +27,6 @@
       <p>Restaurace nemá na den <strong>{{viewDate | humanDate}}</strong> žádnout nabídku.</p>
     </div>
 
-    <button type="button" class="btn btn-default open-detail">Přejít na restauraci</button>
+    <button type="button" class="btn btn-default open-detail" [routerLink]="['/restaurants/detail/' + restaurant.urlTitle]">Přejít na restauraci</button>
   </div>
 </div>

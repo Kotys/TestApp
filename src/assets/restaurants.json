@@ -2,12 +2,13 @@
   {
     "id": 1,
     "title": "U Komendů",
+    "url-title": "1-u-komendu",
     "menus": [
       {
-        "date": "2017-15",
+        "date": "2017-17",
         "dayMenus": [
           {
-            "date": "2017-04-14",
+            "date": "2017-04-24",
             "menuItems": [
               {
                 "type": "soup",
@@ -24,6 +25,10 @@
               {
                 "type": "meal",
                 "title": "Kuře"
+              },
+              {
+                "type": "meal",
+                "title": "Brambory"
               }
             ]
           }

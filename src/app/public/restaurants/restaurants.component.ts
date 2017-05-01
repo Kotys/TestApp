@@ -1,72 +1,73 @@
 import {Component, Injector, OnInit} from "@angular/core";
 import {Restaurant} from "../../shared/model/restaurant";
 import {RestaurantsManagerService} from "../../shared/services/restaurants-manager.service";
-import * as moment from "moment";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Subscription} from "rxjs/Subscription";
+import {ActivatedRoute, Params} from "@angular/router";
+import {BaseComponent} from "../../shared/components/base-component";
+import {DateConvectorService} from "../../shared/services/date-convector.service";
 
 @Component({
   selector: 'app-restaurants',
   templateUrl: './restaurants.component.html',
   styleUrls: ['./restaurants.component.css']
 })
-export class RestaurantsComponent implements OnInit {
+export class RestaurantsComponent extends BaseComponent implements OnInit {
 
+  private activatedRoute: ActivatedRoute;
   private restaurantsManager: RestaurantsManagerService;
-  private formBuilder: FormBuilder;
 
+  public loadingState: boolean = true;
   public restaurants: Restaurant[] = [];
-  public viewDateForm: FormGroup;
   public viewDate: string;
+  public viewDateInvalid: boolean = false;
+
+  private routeParamsChangesSubscription: Subscription;
 
   constructor(injector: Injector) {
+    super(injector);
     this.restaurantsManager = injector.get(RestaurantsManagerService);
-    this.formBuilder = injector.get(FormBuilder);
+    this.activatedRoute = injector.get(ActivatedRoute);
+    this.restaurantsManager.dataPrepared.subscribe(dataReady => {
+      this.loadingState = false;
+    });
   }
 
   ngOnInit() {
-    this.viewDate = moment().format('YYYY-MM-DD');
+    this.routeParamsChangesSubscription = this.activatedRoute.params.subscribe((routeParams: Params) => {
+      if (routeParams['date'] && DateConvectorService.getMomentFromServerDate(routeParams['date']).isValid()) {
+        this.viewDate = DateConvectorService.getClientDateAsStringFrom(routeParams['date']);
 
-    this.viewDateForm = this.formBuilder.group({
-      viewDate: [moment().format('D.M.YYYY'), Validators.required]
-    }, {validator: this.viewDateFormatValidator});
-    this.viewDateForm.controls['viewDate'].valueChanges.debounceTime(50).subscribe((viewDate: string) => {
-      if (this.viewDateForm.valid) {
-        this.viewDate = moment(viewDate, 'D.M.YYYY', true).format('YYYY-MM-DD');
-      }
-    });
-
-    this.restaurantsManager.getAllRestaurants().subscribe((restaurants: Restaurant[]) => {
-      this.restaurants = restaurants;
-    });
-  }
-
-  public nextDay(event): void {
-    event.preventDefault();
-
-    if (this.viewDateForm.valid) {
-      this.viewDateForm.patchValue({
-        viewDate: moment(this.viewDateForm.value.viewDate, 'D.M.YYYY', true).add(1, 'day').format('D.M.YYYY')
-      });
-    }
-  }
-
-  public prevDay(event): void {
-    event.preventDefault();
-
-    if (this.viewDateForm.valid) {
-      this.viewDateForm.patchValue({
-        viewDate: moment(this.viewDateForm.value.viewDate, 'D.M.YYYY', true).subtract(1, 'day').format('D.M.YYYY')
-      });
-    }
-  }
-
-  private viewDateFormatValidator = (formGroup: FormGroup) => {
-    if (formGroup.value['viewDate']) {
-      if (!/^\d{1,2}.\d{1,2}.\d{4}$/.test(formGroup.value.viewDate) || !moment(formGroup.value.viewDate, 'D.M.YYYY', true).isValid()) {
-        formGroup.controls['viewDate'].setErrors({invalidFormat: true});
+        this.loadData();
       } else {
-        formGroup.controls['viewDate'].setErrors(null);
+        this.router.navigate(['/restaurants/' + DateConvectorService.getServerDate()]);
       }
+    });
+  }
+
+  public dateChanged(newDate: string): void {
+    this.viewDateInvalid = !/^\d{1,2}.\d{1,2}.\d{4}$/.test(newDate);
+    if (!this.viewDateInvalid) {
+      this.router.navigate(['/restaurants/' + DateConvectorService.getServerDateAsStringFrom(this.viewDate)]);
     }
-  };
+  }
+
+  private loadData(): void {
+    this.restaurantsManager.getAllRestaurantsByDate(this.viewDate).subscribe((restaurants: Restaurant[]) => {
+      this.restaurants = restaurants;
+      console.log(this.restaurants);
+    }).unsubscribe();
+  }
+
+
+  public nextDay(): void {
+    if (!this.viewDateInvalid) {
+      this.router.navigate(['/restaurants/' + DateConvectorService.getMomentFromClientDate(this.viewDate).add(1, 'day').format(DateConvectorService.DATE_URL)])
+    }
+  }
+
+  public prevDay(): void {
+    if (!this.viewDateInvalid) {
+      this.router.navigate(['/restaurants/' + DateConvectorService.getMomentFromClientDate(this.viewDate).subtract(1, 'day').format(DateConvectorService.DATE_URL)])
+    }
+  }
 }
